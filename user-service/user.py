@@ -1,21 +1,20 @@
-import logging
+import time
 from jaeger_client import Config
 from flask_opentracing import FlaskTracing
 from flask import Flask, request
 from os import getenv
+from opentracing.propagation import Format
+from opentracing.ext import tags
 JAEGER_HOST = getenv('JAEGER_HOST', 'localhost')
 
 if __name__ == '__main__':
     app = Flask(__name__)
-    log_level = logging.DEBUG
-    logging.getLogger('').handlers = []
-    logging.basicConfig(format='%(asctime)s %(message)s', level=log_level)
     # Create configuration object with enabled logging and sampling of all requests.
     config = Config(config={'sampler': {'type': 'const', 'param': 1},
                             'logging': True,
                             'local_agent':
                             {'reporting_host': JAEGER_HOST}},
-                    service_name="bank-account-user")
+                    service_name="user-service")
     jaeger_tracer = config.initialize_tracer()
     tracing = FlaskTracing(jaeger_tracer)
 
@@ -23,8 +22,11 @@ if __name__ == '__main__':
     @tracing.trace()
     def save_user():
         # Extract the span information for request object.
-        with jaeger_tracer.start_active_span(
-                'saving-user') as scope:
+        span_ctx = jaeger_tracer.extract(Format.HTTP_HEADERS, request.headers)
+        span_tags = {tags.SPAN_KIND: tags.SPAN_KIND_RPC_CLIENT}
+        with jaeger_tracer.start_active_span('saving-user', child_of=span_ctx, tags=span_tags):
+            #TODO: Save user in BD
+            time.sleep(1.5)
 
             return "user saved"
 

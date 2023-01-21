@@ -28,10 +28,17 @@ pipenv shell
 ## Run locally
 *Run jaeger usign docker image
 1. Run user service
-JAEGER_HOST=localhost python3 user.py
+JAEGER_HOST=localhost python3 user-service/user.py
 2. Run account service (require user service)
-JAEGER_HOST=localhost USER_API=localhost:5001 python3 account.py
+JAEGER_HOST=localhost USER_API=localhost:5001 python3 account-service/account.py
 
 ### Services
 http://localhost:5000/create-account
 http://localhost:5001/save-user
+
+## Docker
+docker build -t user-service:latest  .
+docker run  -it user-service:latest 
+
+- Agregar al requirements las versiones de los packetes que se utilizan en la imagen de docker
+- Levar el servicio con Docker y probar local el servicio (tal vez se requiera comentar el código de jaeger)
