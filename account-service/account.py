@@ -1,5 +1,6 @@
 import requests
 import time
+import logging
 from jaeger_client import Config
 from flask_opentracing import FlaskTracing
 from flask import Flask
@@ -12,6 +13,10 @@ USER_API = getenv('USER_API', 'localhost:5001')
 
 if __name__ == '__main__':
     app = Flask(__name__)
+    log_level = logging.DEBUG
+    logging.getLogger('').handlers = []
+    logging.basicConfig(format='%(asctime)s %(message)s', level=log_level)
+
     # Create configuration object with enabled logging and sampling of all requests.
     config = Config(config={'sampler': {'type': 'const', 'param': 1},
                             'logging': True,
@@ -31,6 +36,7 @@ if __name__ == '__main__':
             scope.span.log_kv({'event': 'creating-account'})
 
             user_service_url = "http://{}/save-user".format(USER_API)
+            app.logger.info('user_api {}'.format(USER_API))
 
             #Inject current trace
             current_span = scope.span
@@ -42,8 +48,6 @@ if __name__ == '__main__':
 
             # Make the actual request to webserver.
             user_response = requests.get(user_service_url, headers=headers)
-
-            #TODO: Save account in DB
             time.sleep(1)
 
             return "account created"
