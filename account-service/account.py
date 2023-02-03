@@ -9,6 +9,7 @@ from opentracing.propagation import Format
 from opentracing.ext import tags
 
 JAEGER_HOST = getenv('JAEGER_HOST', 'localhost')
+JAEGER_PORT = getenv('JAEGER_PORT', '14268')
 USER_API = getenv('USER_API', 'localhost:5001') 
 
 if __name__ == '__main__':
@@ -16,12 +17,14 @@ if __name__ == '__main__':
     log_level = logging.DEBUG
     logging.getLogger('').handlers = []
     logging.basicConfig(format='%(asctime)s %(message)s', level=log_level)
+    app.logger.info('JAEGER_HOST {}'.format(JAEGER_HOST))
+    app.logger.info('JAEGER_PORT {}'.format(JAEGER_PORT))
 
     # Create configuration object with enabled logging and sampling of all requests.
     config = Config(config={'sampler': {'type': 'const', 'param': 1},
                             'logging': True,
                             'local_agent':
-                            {'reporting_host': JAEGER_HOST}},
+                            {'reporting_host': JAEGER_HOST,'reporting_port': JAEGER_PORT}},
                     service_name="account-service")
     jaeger_tracer = config.initialize_tracer()
     tracing = FlaskTracing(jaeger_tracer)

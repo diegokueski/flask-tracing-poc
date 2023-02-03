@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: account-service
+  template:
+    metadata:
+      labels:
+        app: account-service
+    spec:
+      containers:
+        - name: account-service
+          image: account-service
+          env:
+            - name: JAEGER_HOST
+              value: "simplest-agent.observability.svc.cluster.local"
+            - name: JAEGER_PORT
+              value: "6831"
+            - name: USER_API
+              value: "user-service.user-service.svc.cluster.local:5001"
+          imagePullPolicy: Never #Is madatoy to use local docker image
+          ports:
+            - containerPort: 5000
