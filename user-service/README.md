@@ -19,11 +19,14 @@ kubectl run user-service --image=user-service:latest --image-pull-policy=Never
 kubectl apply -f .k8s/deployment.yaml
 
 +Test the service using curl
-kubectl run mycurlpod --image=curlimages/curl -i --tty -- sh 
-http://user-service.default.svc.cluster.local:5001/save-user
+kubectl run mycurlpod --image=curlimages/curl -i --rm --tty -- sh 
+http://user-service.user-service.svc.cluster.local:5001/save-user
 
 +Check the traces in jaeger UI
 kubectl port-forward svc/simplest-query -n observability 16686:16686
 ++Jager UI
 http://localhost:16686/search 
 
+
+## Create k8s resources
+kubectl apply -k .k8s/
