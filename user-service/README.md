@@ -1,11 +1,10 @@
 ## Docker setup
 
 ### Build
-docker build -t user-service:0.1.0  . 
-docker build -t user-microservice:0.1.0  . 
+docker build -t user-service:latest . 
 
 ## Run
-docker run  -it user-service:latest  
+docker run  -it user-service:latest  bash
 docker run -p 5001:5001 user-service:latest
 
 ### Services
