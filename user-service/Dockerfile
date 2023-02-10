@@ -10,9 +10,13 @@ RUN pip3 install -r requirements.txt
 #Add new stage
 FROM builder AS finisher
 
-COPY . /usr/app/
+# Create a group and user
+RUN addgroup -S appuser && adduser -S appuser -G appuser
+
+COPY --chown=appuser:appuser . /usr/app/
+RUN chmod u+x /usr/app/entrypoint.sh
 
 EXPOSE 5001
 
-RUN chmod +x /usr/app/entrypoint.sh
+USER appuser
 ENTRYPOINT ["/usr/app/entrypoint.sh"]
