@@ -40,5 +40,19 @@ http://localhost:5001/save-user
 docker build -t user-service:latest  .
 docker run  -it user-service:latest 
 
-- Agregar al requirements las versiones de los packetes que se utilizan en la imagen de docker
-- Levar el servicio con Docker y probar local el servicio (tal vez se requiera comentar el código de jaeger)
+## Install Jaeger in k8s (minikube)
++ Reference https://faun.pub/how-to-deploy-jaeger-on-kubernetes-69cf48447182 
+
+1. Install CertManager
+```helm install example example_chart --namespace example --create-namespace --set cert-manager.namespace=security```
+
+2. Install Jaeger operator
+```kubectl create -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.36.0/jaeger-operator.yaml -n observability```
+
+3. Test it
+```
++Port forward
+kubectl port-forward svc/simplest-query -n observability 16686:16686
+++Jager UI
+http://localhost:16686/search
+```

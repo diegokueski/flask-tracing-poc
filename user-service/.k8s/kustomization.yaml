@@ -9,5 +9,5 @@ resources:
   - service.yaml
 images:
   - name: user-service
-    newName: user-microservice
-    newTag: 0.1.0
+    newName: user-service
+    newTag: 0.3.1

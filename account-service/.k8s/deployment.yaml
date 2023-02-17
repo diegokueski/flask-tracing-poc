@@ -25,4 +25,25 @@ spec:
               value: "user-service.user-service.svc.cluster.local:5001"
           imagePullPolicy: Never #Is madatoy to use local docker image
           ports:
-            - containerPort: 5000
+            - name: app-port
+              containerPort: 5000
+          startupProbe:
+            httpGet:
+              path: /health
+              port: app-port
+            failureThreshold: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: app-port
+            initialDelaySeconds: 10
+            periodSeconds: 30 
+            timeoutSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: app-port
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 20

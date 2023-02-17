@@ -54,5 +54,9 @@ if __name__ == '__main__':
             time.sleep(1)
 
             return "account created"
+        
+    @app.route('/health')
+    def health():
+        return {'result': 'healthy'}
 
     app.run(debug=True, host='0.0.0.0', port=5000)

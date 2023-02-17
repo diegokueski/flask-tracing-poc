@@ -37,5 +37,9 @@ if __name__ == '__main__':
             time.sleep(1.5)
 
             return "user saved"
+    
+    @app.route('/health')
+    def health():
+        return {'result': 'healthy'}
 
     app.run(debug=True, host='0.0.0.0', port=5001)
